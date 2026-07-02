@@ -5,6 +5,9 @@ import "react-native-reanimated";
 import { GluestackUIProvider } from "@gluestack-ui/themed";
 import { theme } from "../config/theme";
 
+import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
+import '@/global.css';
+
 export const unstable_settings = {
   anchor: "(tabs)",
 };

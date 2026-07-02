@@ -1,35 +1,49 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
+// app/(tabs)/_layout.tsx
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import {
+  Icon,
+  HomeIcon,
+  AlignLeftIcon,
+  MusicIcon,
+  BarChart2Icon,
+  SettingsIcon,
+} from "@gluestack-ui/themed";
+import HomeScreen from "./home";
+import AlarmsScreen from "./alarms";
+import SoundsScreen from "./sounds";
+import StatsScreen from "./stats";
+import SettingsScreen from "./settings";
 
-import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+const Tab = createBottomTabNavigator();
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
+export default function TabsLayout() {
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarButton: HapticTab,
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-        }}
-      />
-    </Tabs>
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
+          if (route.name === "Home") iconName = HomeIcon;
+          else if (route.name === "Alarms") iconName = AlignLeftIcon;
+          else if (route.name === "Sounds") iconName = MusicIcon;
+          else if (route.name === "Stats") iconName = BarChart2Icon;
+          else if (route.name === "Settings") iconName = SettingsIcon;
+          return <Icon as={iconName} color={color} size="lg" />;
+        },
+        tabBarActiveTintColor: "$primary500",
+        tabBarInactiveTintColor: "$warmGray400",
+        tabBarStyle: {
+          backgroundColor: "$warmGray50",
+          borderTopColor: "$warmGray200",
+          paddingBottom: 6,
+        },
+      })}
+    >
+      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Alarms" component={AlarmsScreen} />
+      <Tab.Screen name="Sounds" component={SoundsScreen} />
+      <Tab.Screen name="Stats" component={StatsScreen} />
+      <Tab.Screen name="Settings" component={SettingsScreen} />
+    </Tab.Navigator>
   );
 }
