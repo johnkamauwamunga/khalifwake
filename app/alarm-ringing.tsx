@@ -8,12 +8,11 @@ import {
   Icon,
   Text,
   VStack,
-  Volume2Icon,
-  VolumeOffIcon,
 } from "@gluestack-ui/themed";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { Audio } from "expo-av";
+import { AudioPlayer } from "expo-audio";
 import * as Haptics from "expo-haptics";
+import { Volume2, VolumeX } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
 import { SunriseAnimation } from "../components/SunriseAnimation";
 
@@ -23,7 +22,7 @@ export default function AlarmRingingScreen() {
   const { alarm } = route.params || {};
   const [progress, setProgress] = useState(0);
   const [intensity, setIntensity] = useState(0);
-  const [sound, setSound] = useState<Audio.Sound | null>(null);
+  const [player, setPlayer] = useState<AudioPlayer | null>(null);
   const [isMuted, setIsMuted] = useState(false);
   const [isSnoozed, setIsSnoozed] = useState(false);
 
@@ -48,28 +47,33 @@ export default function AlarmRingingScreen() {
 
   const playAlarmSound = async () => {
     try {
-      const { sound: newSound } = await Audio.Sound.createAsync(
+      const newPlayer = new AudioPlayer(
         require("../assets/sounds/alarm.mp3"),
-        { volume: 0.1, shouldPlay: true, isLooping: true },
+        1000,
+        { volume: 0.1, isLooping: true },
       );
-      setSound(newSound);
+      await newPlayer.play();
+      setPlayer(newPlayer);
+
       let vol = 0.1;
       const volInterval = setInterval(() => {
-        if (vol < 1) {
+        if (vol < 1.0) {
           vol += 0.02;
-          newSound.setVolumeAsync(vol);
-        } else clearInterval(volInterval);
+          newPlayer.setVolume(vol);
+        } else {
+          clearInterval(volInterval);
+        }
       }, 500);
     } catch (error) {
-      console.error(error);
+      console.error("Error playing alarm:", error);
     }
   };
 
   const stopSound = async () => {
-    if (sound) {
-      await sound.stopAsync();
-      await sound.unloadAsync();
-      setSound(null);
+    if (player) {
+      await player.pause();
+      await player.seekTo(0);
+      setPlayer(null);
     }
   };
 
@@ -80,7 +84,7 @@ export default function AlarmRingingScreen() {
     setTimeout(() => {
       setIsSnoozed(false);
       playAlarmSound();
-    }, 300000); // 5 minutes
+    }, 300000);
   };
 
   const handleDismiss = async () => {
@@ -89,49 +93,59 @@ export default function AlarmRingingScreen() {
     navigation.goBack();
   };
 
+  const toggleMute = () => {
+    if (player) {
+      if (isMuted) {
+        player.setVolume(0.8);
+      } else {
+        player.setVolume(0);
+      }
+      setIsMuted(!isMuted);
+    }
+  };
+
   return (
-    <Box flex={1} bg="$backgroundLight">
+    <Box className="flex-1 bg-backgroundLight">
+      {" "}
+      {/* Tailwind bg */}
       <SunriseAnimation intensity={intensity} progress={progress} />
       <Box
-        position="absolute"
-        bottom={0}
-        left={0}
-        right={0}
-        p="$6"
-        bg="rgba(255,255,255,0.9)"
-        borderTopLeftRadius="$3xl"
-        borderTopRightRadius="$3xl"
+        className="absolute bottom-0 left-0 right-0 p-6 bg-white/90 rounded-t-3xl"
+        // All Tailwind: padding, background with opacity, rounded top
       >
-        <VStack space="lg">
-          <HStack justifyContent="space-between" alignItems="center">
+        <VStack className="space-y-4">
+          <HStack className="justify-between items-center">
             <VStack>
-              <Heading size="xl">{alarm?.label || "Alarm"}</Heading>
-              <Text fontSize="$lg">{alarm?.time || "06:30"}</Text>
+              <Heading className="text-xl text-textDark">
+                {alarm?.label || "Alarm"}
+              </Heading>
+              <Text className="text-textLight">{alarm?.time || "06:30"}</Text>
             </VStack>
-            <Button variant="outline" onPress={() => setIsMuted(!isMuted)}>
+            <Button
+              variant="outline"
+              className="border-primary-500"
+              onPress={toggleMute}
+            >
               <Icon
-                as={isMuted ? VolumeOffIcon : Volume2Icon}
-                color="$primary500"
-                size="md"
+                as={isMuted ? VolumeX : Volume2}
+                className="w-6 h-6 text-primary-500"
               />
             </Button>
           </HStack>
           {isSnoozed && (
-            <Box bg="$amber100" p="$3" borderRadius="$md">
-              <Text color="$amber700">Snoozed for 5 minutes</Text>
+            <Box className="bg-amber-100 p-3 rounded-md">
+              <Text className="text-amber-700">Snoozed for 5 minutes</Text>
             </Box>
           )}
-          <HStack space="md">
+          <HStack className="space-x-4">
             <Button
-              flex={1}
-              variant="outline"
-              borderColor="$primary500"
+              className="flex-1 border border-primary-500 bg-transparent"
               onPress={handleSnooze}
             >
-              <ButtonText color="$primary500">Snooze</ButtonText>
+              <ButtonText className="text-primary-500">Snooze</ButtonText>
             </Button>
-            <Button flex={1} bg="$red500" onPress={handleDismiss}>
-              <ButtonText>Dismiss</ButtonText>
+            <Button className="flex-1 bg-red-500" onPress={handleDismiss}>
+              <ButtonText className="text-white">Dismiss</ButtonText>
             </Button>
           </HStack>
         </VStack>

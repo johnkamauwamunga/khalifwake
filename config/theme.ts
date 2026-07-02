@@ -1,10 +1,9 @@
 // config/theme.ts
-import { createTheme } from "@gluestack-ui/themed";
+import { createConfig } from "@gluestack-ui/themed";
 
-export const theme = createTheme({
+export const theme = createConfig({
   tokens: {
     colors: {
-      // Warm primary palette
       primary50: "#FFF8F0",
       primary100: "#FFEAD5",
       primary200: "#FDD6A8",
@@ -16,7 +15,6 @@ export const theme = createTheme({
       primary800: "#914A0A",
       primary900: "#6E3305",
 
-      // Warm grays
       warmGray50: "#FAF8F5",
       warmGray100: "#F2EFEB",
       warmGray200: "#E5E0DA",
@@ -24,37 +22,11 @@ export const theme = createTheme({
       warmGray400: "#BDB3A9",
       warmGray500: "#A89D91",
 
-      // Semantic
       backgroundLight: "#FAF8F5",
       backgroundDark: "#2D2A27",
       textLight: "#4A4036",
       textDark: "#1C1917",
     },
-    // Optional: custom fonts, spacing, etc.
   },
-  components: {
-    Button: {
-      defaultProps: {
-        bg: "$primary500",
-        _text: { color: "$white", fontWeight: "600" },
-      },
-      variants: {
-        outline: {
-          borderColor: "$primary500",
-          bg: "transparent",
-          _text: { color: "$primary500" },
-        },
-      },
-    },
-    Heading: {
-      defaultProps: {
-        color: "$textDark",
-      },
-    },
-    Text: {
-      defaultProps: {
-        color: "$textLight",
-      },
-    },
-  },
+  aliases: {}, // ← add this to satisfy TypeScript
 });

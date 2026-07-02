@@ -1,17 +1,14 @@
 // app/(tabs)/home.tsx
-import React, { useState, useEffect } from "react";
-import { View, StyleSheet } from "react-native";
 import {
   Box,
-  VStack,
   HStack,
   Heading,
-  Text,
-  Button,
-  ButtonText,
   Icon,
   SunIcon,
+  Text,
+  VStack
 } from "@gluestack-ui/themed";
+import React, { useEffect, useState } from "react";
 import { useAlarms } from "../../context/AlarmsContext";
 
 export default function HomeScreen() {

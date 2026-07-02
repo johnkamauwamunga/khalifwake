@@ -57,22 +57,18 @@ export default function AddAlarmScreen() {
 
   return (
     <Box flex={1} bg="$backgroundLight">
-      <VStack space="lg" p="$4" flex={1}>
-        <HStack alignItems="center" space="md">
-          <Button variant="link" onPress={() => navigation.goBack()}>
-            <Icon as={ChevronLeftIcon} color="$primary500" size="lg" />
+      <VStack flex={1}>
+        <HStack alignItems="center">
+          <Button onPress={() => navigation.goBack()}>
+            <Icon as={ChevronLeftIcon} color="$primary500" />
           </Button>
-          <Heading size="xl">
-            {existingAlarm ? "Edit Alarm" : "Add Alarm"}
-          </Heading>
+          <Heading>{existingAlarm ? "Edit Alarm" : "Add Alarm"}</Heading>
         </HStack>
 
         {/* Time Picker */}
         <Box bg="$primary50" p="$6" borderRadius="$lg" alignItems="center">
-          <Button variant="link" onPress={() => setShowPicker(true)}>
-            <Heading size="4xl" color="$primary600">
-              {time}
-            </Heading>
+          <Button onPress={() => setShowPicker(true)}>
+            <Heading color="$primary600">{time}</Heading>
           </Button>
           {showPicker && (
             <DateTimePicker

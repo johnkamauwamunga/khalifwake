@@ -2,11 +2,10 @@ import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 
-import { GluestackUIProvider } from "@gluestack-ui/themed";
+import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import { theme } from "../config/theme";
-
-import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
-import '@/global.css';
+// If you don't use Tailwind, remove the next line:
+// import "@/global.css";
 
 export const unstable_settings = {
   anchor: "(tabs)",
@@ -15,6 +14,8 @@ export const unstable_settings = {
 export default function RootLayout() {
   return (
     <GluestackUIProvider config={theme}>
+      {" "}
+      {/* ← fixed */}
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen

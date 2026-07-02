@@ -5,9 +5,9 @@ import {
   ButtonText,
   HStack,
   Text,
-  VStack
+  VStack,
 } from "@gluestack-ui/themed";
-import { Audio } from "expo-av";
+import { AudioPlayer } from "expo-audio";
 import React, { useState } from "react";
 
 const SOUNDS = [
@@ -24,53 +24,64 @@ interface SoundSelectorProps {
 }
 
 export function SoundSelector({ selectedSound, onSelect }: SoundSelectorProps) {
-  const [playing, setPlaying] = useState<Audio.Sound | null>(null);
+  const [player, setPlayer] = useState<AudioPlayer | null>(null);
 
   const playPreview = async (id: string) => {
-    if (playing) {
-      await playing.stopAsync();
-      await playing.unloadAsync();
-      setPlaying(null);
+    // Stop any current playback
+    if (player) {
+      await player.pause();
+      await player.seekTo(0);
+      setPlayer(null);
     }
-    // Placeholder - replace with actual sound file
+
     try {
-      const { sound } = await Audio.Sound.createAsync(
-        require("../assets/sounds/preview.mp3"),
-        { volume: 0.5, shouldPlay: true },
+      // ✅ FIX: Provide all 3 required arguments
+      const newPlayer = new AudioPlayer(
+        require("../assets/audio/lesiakower-morning-joy.mp3"),
+        1000, // update interval (ms)
+        {}, // options (empty for now)
       );
-      setPlaying(sound);
+
+      await newPlayer.play();
+      setPlayer(newPlayer);
+
+      // Auto-stop after 2 seconds
       setTimeout(async () => {
-        await sound.stopAsync();
-        await sound.unloadAsync();
-        setPlaying(null);
+        if (newPlayer) {
+          await newPlayer.pause();
+          await newPlayer.seekTo(0);
+          setPlayer(null);
+        }
       }, 2000);
-    } catch (e) {
-      console.log(e);
+    } catch (error) {
+      console.error("Playback error:", error);
     }
   };
 
   return (
     <Box>
-      <Text fontWeight="bold" mb="$2">
-        Sound
-      </Text>
-      <VStack space="sm">
+      <Text className="text-lg font-bold mb-2">Sound</Text>
+      <VStack className="space-y-2">
         {SOUNDS.map((s) => (
           <HStack
             key={s.id}
             justifyContent="space-between"
             alignItems="center"
-            p="$2"
+            className="p-3"
             bg={selectedSound === s.id ? "$primary100" : "$warmGray100"}
             borderRadius="$md"
           >
-            <HStack space="md" alignItems="center">
-              <Text fontSize="$xl">{s.emoji}</Text>
+            <HStack className="space-x-2" alignItems="center">
+              <Text className="text-2xl">{s.emoji}</Text>
               <Text>{s.name}</Text>
             </HStack>
             <Button
-              size="xs"
+              className="w-20 h-10"
               variant={selectedSound === s.id ? "solid" : "outline"}
+              bg={selectedSound === s.id ? "$primary500" : "transparent"}
+              _text={{
+                color: selectedSound === s.id ? "$white" : "$primary500",
+              }}
               onPress={() => {
                 onSelect(s.id);
                 playPreview(s.id);
