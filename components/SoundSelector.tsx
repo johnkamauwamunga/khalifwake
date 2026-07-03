@@ -50,15 +50,20 @@ export function SoundSelector({ selectedSound, onSelect }: SoundSelectorProps) {
             justifyContent="space-between"
             alignItems="center"
             className={`p-3 rounded-md ${selectedSound === s.id ? "bg-primary-100" : "bg-warm-gray-100"}`}
+            will-change-variable
           >
             <HStack className="space-x-2" alignItems="center">
               <Text className="text-2xl">{s.emoji}</Text>
-              <Text className={selectedSound === s.id ? "font-bold" : ""}>
+              <Text
+                className={selectedSound === s.id ? "font-bold" : ""}
+                will-change-variable
+              >
                 {s.name}
               </Text>
             </HStack>
             <Button
               className={`w-20 h-10 ${selectedSound === s.id ? "bg-primary-500" : "border border-primary-500 bg-transparent"}`}
+              will-change-variable
               onPress={() => {
                 onSelect(s.id);
                 playPreview(s.id);
@@ -68,6 +73,7 @@ export function SoundSelector({ selectedSound, onSelect }: SoundSelectorProps) {
                 className={
                   selectedSound === s.id ? "text-white" : "text-primary-500"
                 }
+                will-change-variable
               >
                 Preview
               </ButtonText>

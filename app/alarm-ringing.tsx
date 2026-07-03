@@ -8,11 +8,11 @@ import {
   Text,
   VStack,
 } from "@gluestack-ui/themed";
-import { Audio } from "expo-av";
+import { createAudioPlayer } from "expo-audio";
 import * as Haptics from "expo-haptics";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Volume2, VolumeX } from "lucide-react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { SunriseAnimation } from "../components/SunriseAnimation";
 
 interface Alarm {
@@ -32,9 +32,9 @@ export default function AlarmRingingScreen() {
   const alarmData: Alarm | null = alarm ? JSON.parse(alarm) : null;
   const [progress, setProgress] = useState(0);
   const [intensity, setIntensity] = useState(0);
-  const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [isMuted, setIsMuted] = useState(false);
   const [isSnoozed, setIsSnoozed] = useState(false);
+  const playerRef = useRef<ReturnType<typeof createAudioPlayer> | null>(null);
 
   useEffect(() => {
     playAlarmSound();
@@ -57,19 +57,28 @@ export default function AlarmRingingScreen() {
 
   const playAlarmSound = async () => {
     try {
-      const { sound: newSound } = await Audio.Sound.createAsync(
-        require("../assets/sounds/alarm.mp3"),
-        { volume: 0.1, isLooping: true },
+      // Stop any existing player
+      if (playerRef.current) {
+        playerRef.current.pause();
+        playerRef.current.seekTo(0);
+      }
+
+      // Create a new player for the alarm sound
+      const player = createAudioPlayer(
+        require("../assets/audio/bedside-clock-alarm.mp3"),
       );
-      setSound(newSound);
-      await newSound.playAsync();
+      playerRef.current = player;
+
+      // Set initial volume
+      player.volume = 0.1;
+      await player.play();
 
       // Gradually increase volume
       let vol = 0.1;
       const volInterval = setInterval(() => {
-        if (vol < 1.0 && newSound) {
+        if (vol < 1.0 && playerRef.current) {
           vol += 0.02;
-          newSound.setVolumeAsync(vol);
+          playerRef.current.volume = vol;
         } else {
           clearInterval(volInterval);
         }
@@ -79,17 +88,17 @@ export default function AlarmRingingScreen() {
     }
   };
 
-  const stopSound = async () => {
-    if (sound) {
-      await sound.pauseAsync();
-      await sound.setPositionAsync(0);
-      setSound(null);
+  const stopSound = () => {
+    if (playerRef.current) {
+      playerRef.current.pause();
+      playerRef.current.seekTo(0);
+      playerRef.current = null;
     }
   };
 
   const handleSnooze = async () => {
     setIsSnoozed(true);
-    await stopSound();
+    stopSound();
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     setTimeout(() => {
       setIsSnoozed(false);
@@ -98,17 +107,17 @@ export default function AlarmRingingScreen() {
   };
 
   const handleDismiss = async () => {
-    await stopSound();
+    stopSound();
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     router.back();
   };
 
-  const toggleMute = async () => {
-    if (sound) {
+  const toggleMute = () => {
+    if (playerRef.current) {
       if (isMuted) {
-        await sound.setVolumeAsync(0.8);
+        playerRef.current.volume = 0.8;
       } else {
-        await sound.setVolumeAsync(0);
+        playerRef.current.volume = 0;
       }
       setIsMuted(!isMuted);
     }
