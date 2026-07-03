@@ -14,10 +14,10 @@ import React, { useCallback, useRef, useState } from "react";
 const soundFiles = {
   birds: require("../../assets/audio/birds-chirping.mp3"),
   ocean: require("../../assets/audio/lesiakower-morning-joy.mp3"),
-  forest: require("../../assets/audio/lesiakower-morning-joy.mp3"),
-  rain: require("../../assets/audio/lesiakower-morning-joy.mp3"),
-  sunrise: require("../../assets/audio/lesiakower-morning-joy.mp3"),
-  meadow: require("../../assets/audio/lesiakower-morning-joy.mp3"),
+  forest: require("../../assets/audio/microsammy-clock-alarm.mp3"),
+  rain: require("../../assets/audio/lesiakower-lo-fi-alarm-clock.mp3"),
+  sunrise: require("../../assets/audio/universfield-new-notification.mp3"),
+  meadow: require("../../assets/audio/bedside-clock-alarm.mp3"),
 };
 
 const SOUNDS = [
