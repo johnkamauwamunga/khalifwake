@@ -1,18 +1,12 @@
 // app/(tabs)/_layout.tsx
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import {
-  Icon,
-  HomeIcon,
-  AlignLeftIcon,
-  MusicIcon,
-  BarChart2Icon,
-  SettingsIcon,
-} from "@gluestack-ui/themed";
-import HomeScreen from "./home";
+import { BarChart2, Home, List, Music, Settings } from "lucide-react-native";
+import React from "react";
 import AlarmsScreen from "./alarms";
+import HomeScreen from "./home";
+import SettingsScreen from "./settings";
 import SoundsScreen from "./sounds";
 import StatsScreen from "./stats";
-import SettingsScreen from "./settings";
 
 const Tab = createBottomTabNavigator();
 
@@ -23,19 +17,25 @@ export default function TabsLayout() {
         headerShown: false,
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
-          if (route.name === "Home") iconName = HomeIcon;
-          else if (route.name === "Alarms") iconName = AlignLeftIcon;
-          else if (route.name === "Sounds") iconName = MusicIcon;
-          else if (route.name === "Stats") iconName = BarChart2Icon;
-          else if (route.name === "Settings") iconName = SettingsIcon;
-          return <Icon as={iconName} color={color} size="lg" />;
+          if (route.name === "Home") iconName = Home;
+          else if (route.name === "Alarms") iconName = List;
+          else if (route.name === "Sounds") iconName = Music;
+          else if (route.name === "Stats") iconName = BarChart2;
+          else if (route.name === "Settings") iconName = Settings;
+          return iconName
+            ? React.createElement(iconName, { color, size })
+            : null;
         },
-        tabBarActiveTintColor: "$primary500",
-        tabBarInactiveTintColor: "$warmGray400",
+        tabBarActiveTintColor: "#F89220",
+        tabBarInactiveTintColor: "#BDB3A9",
         tabBarStyle: {
-          backgroundColor: "$warmGray50",
-          borderTopColor: "$warmGray200",
+          backgroundColor: "#F2EFEB",
+          borderTopColor: "#E5E0DA",
           paddingBottom: 6,
+        },
+        tabBarActiveBackgroundColor: "#FFF8F0",
+        tabBarLabelStyle: {
+          fontWeight: "600",
         },
       })}
     >

@@ -1,16 +1,6 @@
 // app/(tabs)/stats.tsx
-import {
-  AlertCircleIcon,
-  Box,
-  CheckCircleIcon,
-  ClockIcon,
-  Heading,
-  HStack,
-  Icon,
-  Text,
-  VStack,
-} from "@gluestack-ui/themed";
 import React from "react";
+import { Text, View } from "react-native";
 import { useAlarms } from "../../context/AlarmsContext";
 
 export default function StatsScreen() {
@@ -20,52 +10,32 @@ export default function StatsScreen() {
   const disabled = total - enabled;
 
   return (
-    <Box flex={1} bg="$backgroundLight" p="$4">
-      <VStack space="xl">
-        <Heading size="xl">Alarm Statistics</Heading>
-        <HStack space="md" justifyContent="space-around">
-          <Box
-            bg="$primary50"
-            p="$4"
-            borderRadius="$lg"
-            alignItems="center"
-            flex={1}
-          >
-            <Icon as={ClockIcon} color="$primary500" size="xl" />
-            <Heading size="xl">{total}</Heading>
+    <View className="flex-1 bg-background p-4">
+      <View className="gap-6">
+        <Text className="text-xl font-bold">Alarm Statistics</Text>
+        <View className="flex-row gap-4 justify-around">
+          <View className="bg-primary/10 p-4 rounded-lg items-center flex-1">
+            <Text className="text-3xl">⏰</Text>
+            <Text className="text-3xl font-bold">{total}</Text>
             <Text>Total Alarms</Text>
-          </Box>
-          <Box
-            bg="$green50"
-            p="$4"
-            borderRadius="$lg"
-            alignItems="center"
-            flex={1}
-          >
-            <Icon as={CheckCircleIcon} color="$green500" size="xl" />
-            <Heading size="xl">{enabled}</Heading>
+          </View>
+          <View className="bg-green-100 p-4 rounded-lg items-center flex-1">
+            <Text className="text-3xl">✅</Text>
+            <Text className="text-3xl font-bold">{enabled}</Text>
             <Text>Enabled</Text>
-          </Box>
-          <Box
-            bg="$red50"
-            p="$4"
-            borderRadius="$lg"
-            alignItems="center"
-            flex={1}
-          >
-            <Icon as={AlertCircleIcon} color="$red500" size="xl" />
-            <Heading size="xl">{disabled}</Heading>
+          </View>
+          <View className="bg-red-100 p-4 rounded-lg items-center flex-1">
+            <Text className="text-3xl">❌</Text>
+            <Text className="text-3xl font-bold">{disabled}</Text>
             <Text>Disabled</Text>
-          </Box>
-        </HStack>
-        <Box bg="$warmGray100" p="$4" borderRadius="$lg">
-          <Heading size="sm" mb="$2">
-            Upcoming Alarm
-          </Heading>
+          </View>
+        </View>
+        <View className="bg-muted p-4 rounded-lg">
+          <Text className="text-sm font-bold mb-2">Upcoming Alarm</Text>
           <Text>Tomorrow at 6:30 AM (Sunrise)</Text>
-        </Box>
+        </View>
         {/* Add more stats: most used sound, average time, etc. */}
-      </VStack>
-    </Box>
+      </View>
+    </View>
   );
 }

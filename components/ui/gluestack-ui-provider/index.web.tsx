@@ -1,39 +1,42 @@
-'use client';
-import React, { useEffect, useLayoutEffect } from 'react';
-import { OverlayProvider } from '@gluestack-ui/core/overlay/creator';
-import { ToastProvider } from '@gluestack-ui/core/toast/creator';
-import { script } from './script';
+"use client";
+import { StyledProvider } from "@gluestack-style/react";
+import { OverlayProvider } from "@gluestack-ui/core/overlay/creator";
+import { ToastProvider } from "@gluestack-ui/core/toast/creator";
+import React, { useEffect, useLayoutEffect } from "react";
+import { script } from "./script";
 
-export type ModeType = 'light' | 'dark' | 'system';
+export type ModeType = "light" | "dark" | "system";
 
 export const useSafeLayoutEffect =
-  typeof window !== 'undefined' ? useLayoutEffect : useEffect;
+  typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 export function GluestackUIProvider({
-  mode = 'light',
+  mode = "light",
+  config,
   ...props
 }: {
   mode?: ModeType;
+  config?: any;
   children?: React.ReactNode;
 }) {
   const handleMediaQuery = React.useCallback((e: MediaQueryListEvent) => {
-    script(e.matches ? 'dark' : 'light');
+    script(e.matches ? "dark" : "light");
   }, []);
 
   useSafeLayoutEffect(() => {
-    if (mode !== 'system') {
+    if (mode !== "system") {
       const documentElement = document.documentElement;
       if (documentElement) {
         documentElement.classList.add(mode);
-        documentElement.classList.remove(mode === 'light' ? 'dark' : 'light');
+        documentElement.classList.remove(mode === "light" ? "dark" : "light");
         documentElement.style.colorScheme = mode;
       }
     }
   }, [mode]);
 
   useSafeLayoutEffect(() => {
-    if (mode !== 'system') return;
-    const media = window.matchMedia('(prefers-color-scheme: dark)');
+    if (mode !== "system") return;
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
 
     media.addListener(handleMediaQuery);
 
@@ -48,9 +51,11 @@ export function GluestackUIProvider({
           __html: `(${script.toString()})('${mode}')`,
         }}
       />
-      <OverlayProvider>
-        <ToastProvider>{props.children}</ToastProvider>
-      </OverlayProvider>
+      <StyledProvider config={config}>
+        <OverlayProvider>
+          <ToastProvider>{props.children}</ToastProvider>
+        </OverlayProvider>
+      </StyledProvider>
     </>
   );
 }

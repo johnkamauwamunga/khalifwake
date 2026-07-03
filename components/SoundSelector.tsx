@@ -7,8 +7,8 @@ import {
   Text,
   VStack,
 } from "@gluestack-ui/themed";
-import { AudioPlayer } from "expo-audio";
-import React, { useState } from "react";
+import { useAudioPlayer } from "expo-audio";
+import React from "react";
 
 const SOUNDS = [
   { id: "birds", name: "Birds", emoji: "🐦" },
@@ -24,34 +24,16 @@ interface SoundSelectorProps {
 }
 
 export function SoundSelector({ selectedSound, onSelect }: SoundSelectorProps) {
-  const [player, setPlayer] = useState<AudioPlayer | null>(null);
+  const player = useAudioPlayer(
+    require("../assets/audio/lesiakower-morning-joy.mp3"),
+  );
 
   const playPreview = async (id: string) => {
-    // Stop any current playback
-    if (player) {
-      await player.pause();
-      await player.seekTo(0);
-      setPlayer(null);
-    }
-
     try {
-      // ✅ FIX: Provide all 3 required arguments
-      const newPlayer = new AudioPlayer(
-        require("../assets/audio/lesiakower-morning-joy.mp3"),
-        1000, // update interval (ms)
-        {}, // options (empty for now)
-      );
-
-      await newPlayer.play();
-      setPlayer(newPlayer);
-
+      await player.play();
       // Auto-stop after 2 seconds
       setTimeout(async () => {
-        if (newPlayer) {
-          await newPlayer.pause();
-          await newPlayer.seekTo(0);
-          setPlayer(null);
-        }
+        await player.pause();
       }, 2000);
     } catch (error) {
       console.error("Playback error:", error);
@@ -67,27 +49,28 @@ export function SoundSelector({ selectedSound, onSelect }: SoundSelectorProps) {
             key={s.id}
             justifyContent="space-between"
             alignItems="center"
-            className="p-3"
-            bg={selectedSound === s.id ? "$primary100" : "$warmGray100"}
-            borderRadius="$md"
+            className={`p-3 rounded-md ${selectedSound === s.id ? "bg-primary-100" : "bg-warm-gray-100"}`}
           >
             <HStack className="space-x-2" alignItems="center">
               <Text className="text-2xl">{s.emoji}</Text>
-              <Text>{s.name}</Text>
+              <Text className={selectedSound === s.id ? "font-bold" : ""}>
+                {s.name}
+              </Text>
             </HStack>
             <Button
-              className="w-20 h-10"
-              variant={selectedSound === s.id ? "solid" : "outline"}
-              bg={selectedSound === s.id ? "$primary500" : "transparent"}
-              _text={{
-                color: selectedSound === s.id ? "$white" : "$primary500",
-              }}
+              className={`w-20 h-10 ${selectedSound === s.id ? "bg-primary-500" : "border border-primary-500 bg-transparent"}`}
               onPress={() => {
                 onSelect(s.id);
                 playPreview(s.id);
               }}
             >
-              <ButtonText>Preview</ButtonText>
+              <ButtonText
+                className={
+                  selectedSound === s.id ? "text-white" : "text-primary-500"
+                }
+              >
+                Preview
+              </ButtonText>
             </Button>
           </HStack>
         ))}

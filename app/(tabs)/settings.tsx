@@ -1,64 +1,35 @@
 // app/(tabs)/settings.tsx
-import {
-  Box,
-  Button,
-  ButtonText,
-  Heading,
-  HStack,
-  Icon,
-  LogOutIcon,
-  Switch,
-  Text,
-  VStack,
-} from "@gluestack-ui/themed";
+import { Switch } from "@gluestack-ui/themed";
 import React from "react";
+import { Pressable, Text, View } from "react-native";
 
 export default function SettingsScreen() {
   return (
-    <Box flex={1} bg="$backgroundLight" p="$4">
-      <VStack space="lg">
-        <Heading size="xl">Settings</Heading>
-        <HStack
-          justifyContent="space-between"
-          alignItems="center"
-          p="$3"
-          bg="$warmGray100"
-          borderRadius="$md"
-        >
-          <Text fontWeight="bold">Vibration</Text>
-          <Switch value={true} trackColor={{ true: "$primary500" }} />
-        </HStack>
-        <HStack
-          justifyContent="space-between"
-          alignItems="center"
-          p="$3"
-          bg="$warmGray100"
-          borderRadius="$md"
-        >
-          <Text fontWeight="bold">Sound Volume</Text>
+    <View className="flex-1 bg-background p-4">
+      <View className="gap-4">
+        <Text className="text-xl font-bold">Settings</Text>
+        <View className="flex-row justify-between items-center p-3 bg-muted rounded-md">
+          <Text className="font-bold">Vibration</Text>
+          <Switch value={true} trackColor={{ true: "#F89220" }} />
+        </View>
+        <View className="flex-row justify-between items-center p-3 bg-muted rounded-md">
+          <Text className="font-bold">Sound Volume</Text>
           {/* You can add a slider here */}
           <Text>50%</Text>
-        </HStack>
-        <HStack
-          justifyContent="space-between"
-          alignItems="center"
-          p="$3"
-          bg="$warmGray100"
-          borderRadius="$md"
-        >
-          <Text fontWeight="bold">Snooze Duration</Text>
+        </View>
+        <View className="flex-row justify-between items-center p-3 bg-muted rounded-md">
+          <Text className="font-bold">Snooze Duration</Text>
           <Text>5 minutes</Text>
-        </HStack>
-        <Button variant="outline" borderColor="$red500" mt="$4">
-          <Icon as={LogOutIcon} color="$red500" size="md" />
-          <ButtonText color="$red500" ml="$2">
+        </View>
+        <Pressable className="border border-red-500 rounded-md p-3 mt-4">
+          <Text className="text-red-500 text-center font-medium">
             Reset All Alarms
-          </ButtonText>
-        </Button>
-        <Text fontSize="$sm" color="$textLight" textAlign="center">
+          </Text>
+        </Pressable>
+        <Text className="text-sm text-muted-foreground text-center">
           Version 1.0.0
         </Text>
-      </VStack>
-    </Box>
+      </View>
+    </View>
   );
 }

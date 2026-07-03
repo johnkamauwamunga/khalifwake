@@ -6,108 +6,160 @@
 /* ─── Theme: design tokens (light / dark) ─────────────────────────
    1. :root              — light defaults (all platforms)
    2. @media dark :root  — dark defaults; nativewind maps this to
-                           Appearance.getColorScheme() on native.
+                          Appearance.getColorScheme() on native.
    3. :root.dark / :root.light — higher specificity for web class toggle. */
 @layer theme {
   :root {
-    --primary: 23 23 23;
-    --primary-foreground: 250 250 250;
-    --card: 255 255 255;
-    --secondary: 245 245 245;
+    /* Alarm app colors - warm oranges and reds */
+    --primary: 248 146 32; /* #F89220 - warm orange for alarms */
+    --primary-foreground: 255 255 255;
+    --primary-50: 255 248 240;
+    --primary-100: 255 234 213;
+    --primary-200: 253 214 168;
+    --primary-300: 252 191 122;
+    --primary-400: 250 168 77;
+    --primary-500: 248 146 32;
+    --primary-600: 217 122 24;
+    --primary-700: 181 98 16;
+    --primary-800: 145 74 10;
+    --primary-900: 110 51 5;
+
+    --secondary: 254 247 235;
     --secondary-foreground: 23 23 23;
-    --background: 255 255 255;
-    --popover: 255 255 255;
-    --popover-foreground: 10 10 10;
-    --muted: 245 245 245;
+
+    --background: 252 247 235; /* Warm off-white */
+    --background-dark: 30 30 28;
+
+    --card: 255 255 255;
+    --card-foreground: 10 10 10;
+
+    --muted: 245 240 225;
     --muted-foreground: 115 115 115;
-    --destructive: 231 0 11;
-    --foreground: 10 10 10;
-    --border: 229 229 229;
-    --input: 229 229 229;
-    --ring: 212 212 212;
-    --accent: 247 247 247;
-    --accent-foreground: 52 52 52;
+
+    --destructive: 239 68 68; /* Red for dismiss/snooze */
+    --destructive-foreground: 255 255 255;
+
+    --border: 230 215 190;
+    --input: 230 215 190;
+    --ring: 248 146 32;
+
+    --orange: 248 146 32;
+    --orange-50: 255 247 237;
+    --orange-100: 255 237 213;
+    --orange-200: 254 215 170;
+    --orange-300: 253 183 116;
+    --orange-400: 251 146 60;
+    --orange-500: 249 115 22;
+    --orange-600: 234 88 12;
+    --orange-700: 194 65 12;
+    --orange-800: 154 52 0;
+    --orange-900: 124 45 18;
+
+    --warm-gray-50: 250 248 245;
+    --warm-gray-100: 242 239 235;
+    --warm-gray-200: 229 224 218;
+    --warm-gray-300: 209 202 194;
+    --warm-gray-400: 189 179 169;
+    --warm-gray-500: 168 157 145;
   }
 
   @media (prefers-color-scheme: dark) {
     :root {
       --primary: 255 245 245;
       --primary-foreground: 23 23 23;
-      --card: 23 23 23;
-      --secondary: 38 38 38;
+      --card: 30 30 28;
+      --secondary: 50 50 48;
       --secondary-foreground: 250 250 250;
-      --background: 10 10 10;
-      --popover: 23 23 23;
-      --popover-foreground: 250 250 250;
-      --muted: 38 38 38;
-      --muted-foreground: 161 161 161;
+      --background: 20 20 18;
+      --muted: 50 50 48;
+      --muted-foreground: 160 160 160;
       --destructive: 255 100 103;
-      --foreground: 250 250 250;
-      --border: 46 46 46;
-      --input: 46 46 46;
-      --accent: 38 38 38;
-      --accent-foreground: 250 250 250;
-      --ring: 115 115 115;
+      --border: 60 60 58;
+      --input: 60 60 58;
+      --ring: 248 146 32;
     }
   }
 
   :root.dark {
     --primary: 255 245 245;
     --primary-foreground: 23 23 23;
-    --card: 23 23 23;
-    --secondary: 38 38 38;
+    --card: 30 30 28;
+    --secondary: 50 50 48;
     --secondary-foreground: 250 250 250;
-    --background: 10 10 10;
-    --popover: 23 23 23;
-    --popover-foreground: 250 250 250;
-    --muted: 38 38 38;
-    --muted-foreground: 161 161 161;
+    --background: 20 20 18;
+    --muted: 50 50 48;
+    --muted-foreground: 160 160 160;
     --destructive: 255 100 103;
-    --foreground: 250 250 250;
-    --border: 46 46 46;
-    --input: 46 46 46;
-    --accent: 38 38 38;
-    --accent-foreground: 250 250 250;
-    --ring: 115 115 115;
+    --border: 60 60 58;
+    --input: 60 60 58;
+    --ring: 248 146 32;
   }
 
   :root.light {
-    --primary: 23 23 23;
-    --primary-foreground: 250 250 250;
+    --primary: 248 146 32;
+    --primary-foreground: 255 255 255;
     --card: 255 255 255;
-    --secondary: 245 245 245;
+    --secondary: 254 247 235;
     --secondary-foreground: 23 23 23;
-    --background: 255 255 255;
-    --popover: 255 255 255;
-    --popover-foreground: 10 10 10;
-    --muted: 245 245 245;
+    --background: 252 247 235;
+    --muted: 245 240 225;
     --muted-foreground: 115 115 115;
-    --destructive: 231 0 11;
-    --foreground: 10 10 10;
-    --border: 229 229 229;
-    --input: 229 229 229;
-    --ring: 212 212 212;
-    --accent: 247 247 247;
-    --accent-foreground: 52 52 52;
+    --destructive: 239 68 68;
+    --border: 230 215 190;
+    --input: 230 215 190;
+    --ring: 248 146 32;
   }
 }
 
 @theme inline {
   --color-primary: rgb(var(--primary));
   --color-primary-foreground: rgb(var(--primary-foreground));
-  --color-card: rgb(var(--card));
+  --color-primary-50: rgb(var(--primary-50));
+  --color-primary-100: rgb(var(--primary-100));
+  --color-primary-200: rgb(var(--primary-200));
+  --color-primary-300: rgb(var(--primary-300));
+  --color-primary-400: rgb(var(--primary-400));
+  --color-primary-500: rgb(var(--primary-500));
+  --color-primary-600: rgb(var(--primary-600));
+  --color-primary-700: rgb(var(--primary-700));
+  --color-primary-800: rgb(var(--primary-800));
+  --color-primary-900: rgb(var(--primary-900));
+
   --color-secondary: rgb(var(--secondary));
   --color-secondary-foreground: rgb(var(--secondary-foreground));
+
   --color-background: rgb(var(--background));
-  --color-popover: rgb(var(--popover));
-  --color-popover-foreground: rgb(var(--popover-foreground));
+  --color-background-dark: rgb(var(--background-dark));
+
+  --color-card: rgb(var(--card));
+  --color-card-foreground: rgb(var(--card-foreground));
+
   --color-muted: rgb(var(--muted));
   --color-muted-foreground: rgb(var(--muted-foreground));
+
   --color-destructive: rgb(var(--destructive));
-  --color-foreground: rgb(var(--foreground));
+  --color-destructive-foreground: rgb(var(--destructive-foreground));
+
   --color-border: rgb(var(--border));
   --color-input: rgb(var(--input));
   --color-ring: rgb(var(--ring));
-  --color-accent: rgb(var(--accent));
-  --color-accent-foreground: rgb(var(--accent-foreground));
+
+  --color-orange: rgb(var(--orange));
+  --color-orange-50: rgb(var(--orange-50));
+  --color-orange-100: rgb(var(--orange-100));
+  --color-orange-200: rgb(var(--orange-200));
+  --color-orange-300: rgb(var(--orange-300));
+  --color-orange-400: rgb(var(--orange-400));
+  --color-orange-500: rgb(var(--orange-500));
+  --color-orange-600: rgb(var(--orange-600));
+  --color-orange-700: rgb(var(--orange-700));
+  --color-orange-800: rgb(var(--orange-800));
+  --color-orange-900: rgb(var(--orange-900));
+
+  --color-warm-gray-50: rgb(var(--warm-gray-50));
+  --color-warm-gray-100: rgb(var(--warm-gray-100));
+  --color-warm-gray-200: rgb(var(--warm-gray-200));
+  --color-warm-gray-300: rgb(var(--warm-gray-300));
+  --color-warm-gray-400: rgb(var(--warm-gray-400));
+  --color-warm-gray-500: rgb(var(--warm-gray-500));
 }

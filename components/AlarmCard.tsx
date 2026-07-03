@@ -1,16 +1,7 @@
 // components/AlarmCard.tsx
-import {
-  Box,
-  DeleteIcon,
-  EditIcon,
-  HStack,
-  Heading,
-  IconButton,
-  Switch,
-  Text,
-  VStack
-} from "@gluestack-ui/themed";
+import { Switch } from "@gluestack-ui/themed";
 import React from "react";
+import { Pressable, Text, View } from "react-native";
 import { Alarm } from "../context/AlarmsContext";
 
 interface AlarmCardProps {
@@ -30,64 +21,55 @@ export function AlarmCard({
   const repeatStr = alarm.repeatDays.map((d) => days[d]).join(", ");
 
   return (
-    <Box
-      bg={alarm.enabled ? "$white" : "$warmGray100"}
-      p="$4"
-      borderRadius="$lg"
-      borderWidth={1}
-      borderColor={alarm.enabled ? "$primary200" : "$warmGray300"}
-      opacity={alarm.enabled ? 1 : 0.6}
+    <View
+      className={`p-4 rounded-lg border ${alarm.enabled ? "bg-white border-primary/30" : "bg-muted border-border"}`}
+      style={{ opacity: alarm.enabled ? 1 : 0.6 }}
     >
-      <HStack justifyContent="space-between" alignItems="center">
-        <VStack space="xs" flex={1}>
-          <HStack space="sm" alignItems="center">
-            <Heading
-              size="2xl"
-              color={alarm.enabled ? "$primary600" : "$textDark"}
+      <View className="flex-row justify-between items-center">
+        <View className="flex-1 gap-2">
+          <View className="flex-row gap-2 items-center">
+            <Text
+              className={`text-2xl font-bold ${alarm.enabled ? "text-primary" : "text-foreground"}`}
             >
               {alarm.time}
-            </Heading>
+            </Text>
             {alarm.sunrise && (
-              <Box bg="$orange100" px="$2" py="$1" borderRadius="$sm">
-                <Text fontSize="$xs" color="$orange600">
-                  🌅 Sunrise
-                </Text>
-              </Box>
+              <View className="bg-orange-100 px-2 py-1 rounded-sm">
+                <Text className="text-xs text-orange-600">🌅 Sunrise</Text>
+              </View>
             )}
-          </HStack>
-          <Text fontSize="$sm">{alarm.label}</Text>
-          <Text fontSize="$xs" color="$textLight">
-            {repeatStr}
-          </Text>
-          <HStack space="sm" alignItems="center">
-            {alarm.vibrate && <Text fontSize="$xs">🔔</Text>}
-            <Text fontSize="$xs" color="$textLight">
+          </View>
+          <Text className="text-sm">{alarm.label}</Text>
+          <Text className="text-xs text-muted-foreground">{repeatStr}</Text>
+          <View className="flex-row gap-2 items-center">
+            {alarm.vibrate && <Text className="text-xs">🔔</Text>}
+            <Text className="text-xs text-muted-foreground">
               Sound: {alarm.sound}
             </Text>
-          </HStack>
-        </VStack>
-        <VStack space="md" alignItems="center">
+          </View>
+        </View>
+        <View className="gap-4 items-center">
           <Switch
             value={alarm.enabled}
             onValueChange={() => onToggle(alarm.id)}
-            trackColor={{ true: "$primary500", false: "$warmGray300" }}
+            trackColor={{ true: "#F89220", false: "#D1CAC2" }}
           />
-          <HStack space="sm">
-            <IconButton
-              size="sm"
-              variant="outline"
+          <View className="flex-row gap-2">
+            <Pressable
+              className="p-1 border border-border rounded"
               onPress={() => onEdit(alarm.id)}
-              icon={EditIcon}
-            />
-            <IconButton
-              size="sm"
-              variant="outline"
+            >
+              <Text className="text-xs">✏️</Text>
+            </Pressable>
+            <Pressable
+              className="p-1 border border-border rounded"
               onPress={() => onDelete(alarm.id)}
-              icon={DeleteIcon}
-            />
-          </HStack>
-        </VStack>
-      </HStack>
-    </Box>
+            >
+              <Text className="text-xs">🗑️</Text>
+            </Pressable>
+          </View>
+        </View>
+      </View>
+    </View>
   );
 }

@@ -1,32 +1,24 @@
 // app/(tabs)/alarms.tsx
-import {
-  AddIcon,
-  Box,
-  Button,
-  ButtonText,
-  Heading,
-  Icon,
-  Text,
-  VStack,
-} from "@gluestack-ui/themed";
-import { useNavigation } from "@react-navigation/native";
+import { useRouter } from "expo-router";
 import React from "react";
-import { FlatList } from "react-native";
+import { FlatList, Pressable, Text, View } from "react-native";
 import { AlarmCard } from "../../components/AlarmCard";
 import { useAlarms } from "../../context/AlarmsContext";
 
 export default function AlarmsScreen() {
   const { alarms, toggleAlarm, deleteAlarm } = useAlarms();
-  const navigation = useNavigation();
+  const router = useRouter();
 
   return (
-    <Box flex={1} bg="$backgroundLight" p="$4">
-      <VStack space="md" flex={1}>
-        <Heading size="xl">My Alarms</Heading>
+    <View className="flex-1 bg-background p-4">
+      <View className="flex-1 gap-4">
+        <Text className="text-xl font-bold">My Alarms</Text>
         {alarms.length === 0 ? (
-          <Box flex={1} justifyContent="center" alignItems="center">
-            <Text color="$textLight">No alarms set. Tap + to add one.</Text>
-          </Box>
+          <View className="flex-1 justify-center items-center">
+            <Text className="text-muted-foreground">
+              No alarms set. Tap + to add one.
+            </Text>
+          </View>
         ) : (
           <FlatList
             data={alarms}
@@ -36,7 +28,10 @@ export default function AlarmsScreen() {
                 alarm={item}
                 onToggle={toggleAlarm}
                 onEdit={(id) =>
-                  navigation.navigate("AddAlarm", { alarmId: id })
+                  router.push({
+                    pathname: "/add-alarm",
+                    params: { alarmId: id },
+                  })
                 }
                 onDelete={deleteAlarm}
               />
@@ -44,15 +39,17 @@ export default function AlarmsScreen() {
             contentContainerStyle={{ gap: 12, paddingBottom: 20 }}
           />
         )}
-        <Button
-          bg="$primary500"
-          onPress={() => navigation.navigate("AddAlarm")}
-          mt="auto"
+        <Pressable
+          className="bg-primary p-3 rounded-lg mt-auto"
+          onPress={() => router.push("/add-alarm")}
         >
-          <Icon as={AddIcon} color="$white" size="md" />
-          <ButtonText ml="$2">Add New Alarm</ButtonText>
-        </Button>
-      </VStack>
-    </Box>
+          <View className="flex-row items-center justify-center">
+            <Text className="text-white text-base font-medium">
+              + Add New Alarm
+            </Text>
+          </View>
+        </Pressable>
+      </View>
+    </View>
   );
 }

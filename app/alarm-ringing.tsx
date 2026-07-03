@@ -1,6 +1,5 @@
 // app/alarm-ringing.tsx
 import {
-  Box,
   Button,
   ButtonText,
   HStack,
@@ -9,20 +8,31 @@ import {
   Text,
   VStack,
 } from "@gluestack-ui/themed";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import { AudioPlayer } from "expo-audio";
+import { Audio } from "expo-av";
 import * as Haptics from "expo-haptics";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { Volume2, VolumeX } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
 import { SunriseAnimation } from "../components/SunriseAnimation";
 
+interface Alarm {
+  id: string;
+  time: string;
+  label: string;
+  repeatDays: number[];
+  sound: string;
+  vibrate: boolean;
+  enabled: boolean;
+  sunrise: boolean;
+}
+
 export default function AlarmRingingScreen() {
-  const navigation = useNavigation();
-  const route = useRoute();
-  const { alarm } = route.params || {};
+  const router = useRouter();
+  const { alarm } = useLocalSearchParams<{ alarm?: string }>();
+  const alarmData: Alarm | null = alarm ? JSON.parse(alarm) : null;
   const [progress, setProgress] = useState(0);
   const [intensity, setIntensity] = useState(0);
-  const [player, setPlayer] = useState<AudioPlayer | null>(null);
+  const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [isMuted, setIsMuted] = useState(false);
   const [isSnoozed, setIsSnoozed] = useState(false);
 
@@ -47,19 +57,19 @@ export default function AlarmRingingScreen() {
 
   const playAlarmSound = async () => {
     try {
-      const newPlayer = new AudioPlayer(
+      const { sound: newSound } = await Audio.Sound.createAsync(
         require("../assets/sounds/alarm.mp3"),
-        1000,
         { volume: 0.1, isLooping: true },
       );
-      await newPlayer.play();
-      setPlayer(newPlayer);
+      setSound(newSound);
+      await newSound.playAsync();
 
+      // Gradually increase volume
       let vol = 0.1;
       const volInterval = setInterval(() => {
-        if (vol < 1.0) {
+        if (vol < 1.0 && newSound) {
           vol += 0.02;
-          newPlayer.setVolume(vol);
+          newSound.setVolumeAsync(vol);
         } else {
           clearInterval(volInterval);
         }
@@ -70,10 +80,10 @@ export default function AlarmRingingScreen() {
   };
 
   const stopSound = async () => {
-    if (player) {
-      await player.pause();
-      await player.seekTo(0);
-      setPlayer(null);
+    if (sound) {
+      await sound.pauseAsync();
+      await sound.setPositionAsync(0);
+      setSound(null);
     }
   };
 
@@ -90,66 +100,59 @@ export default function AlarmRingingScreen() {
   const handleDismiss = async () => {
     await stopSound();
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    navigation.goBack();
+    router.back();
   };
 
-  const toggleMute = () => {
-    if (player) {
+  const toggleMute = async () => {
+    if (sound) {
       if (isMuted) {
-        player.setVolume(0.8);
+        await sound.setVolumeAsync(0.8);
       } else {
-        player.setVolume(0);
+        await sound.setVolumeAsync(0);
       }
       setIsMuted(!isMuted);
     }
   };
 
   return (
-    <Box className="flex-1 bg-backgroundLight">
-      {" "}
-      {/* Tailwind bg */}
+    <VStack className="flex-1 bg-background">
       <SunriseAnimation intensity={intensity} progress={progress} />
-      <Box
-        className="absolute bottom-0 left-0 right-0 p-6 bg-white/90 rounded-t-3xl"
-        // All Tailwind: padding, background with opacity, rounded top
-      >
-        <VStack className="space-y-4">
-          <HStack className="justify-between items-center">
-            <VStack>
-              <Heading className="text-xl text-textDark">
-                {alarm?.label || "Alarm"}
-              </Heading>
-              <Text className="text-textLight">{alarm?.time || "06:30"}</Text>
-            </VStack>
-            <Button
-              variant="outline"
-              className="border-primary-500"
-              onPress={toggleMute}
-            >
-              <Icon
-                as={isMuted ? VolumeX : Volume2}
-                className="w-6 h-6 text-primary-500"
-              />
-            </Button>
-          </HStack>
-          {isSnoozed && (
-            <Box className="bg-amber-100 p-3 rounded-md">
-              <Text className="text-amber-700">Snoozed for 5 minutes</Text>
-            </Box>
-          )}
-          <HStack className="space-x-4">
-            <Button
-              className="flex-1 border border-primary-500 bg-transparent"
-              onPress={handleSnooze}
-            >
-              <ButtonText className="text-primary-500">Snooze</ButtonText>
-            </Button>
-            <Button className="flex-1 bg-red-500" onPress={handleDismiss}>
-              <ButtonText className="text-white">Dismiss</ButtonText>
-            </Button>
-          </HStack>
-        </VStack>
-      </Box>
-    </Box>
+      <VStack className="absolute bottom-0 left-0 right-0 p-6 bg-white/90 rounded-t-3xl">
+        <HStack className="justify-between items-center">
+          <VStack>
+            <Heading className="text-xl text-foreground">
+              {alarmData?.label || "Alarm"}
+            </Heading>
+            <Text className="text-muted-foreground">
+              {alarmData?.time || "06:30"}
+            </Text>
+          </VStack>
+          <Button className="border border-primary-500" onPress={toggleMute}>
+            <Icon
+              as={isMuted ? VolumeX : Volume2}
+              className="w-6 h-6 text-primary-500"
+            />
+          </Button>
+        </HStack>
+        {isSnoozed && (
+          <VStack className="bg-orange-100 p-3 rounded-md">
+            <Text className="text-orange-700">Snoozed for 5 minutes</Text>
+          </VStack>
+        )}
+        <HStack className="space-x-4">
+          <Button
+            className="flex-1 border border-primary-500 bg-transparent"
+            onPress={handleSnooze}
+          >
+            <ButtonText className="text-primary-500">Snooze</ButtonText>
+          </Button>
+          <Button className="flex-1 bg-destructive" onPress={handleDismiss}>
+            <ButtonText className="text-destructive-foreground">
+              Dismiss
+            </ButtonText>
+          </Button>
+        </HStack>
+      </VStack>
+    </VStack>
   );
 }

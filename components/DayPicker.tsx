@@ -18,19 +18,19 @@ export function DayPicker({ selectedDays, onToggleDay }: DayPickerProps) {
   };
 
   return (
-    <VStack space="sm">
-      <Text fontWeight="bold">Repeat</Text>
-      <HStack space="sm" flexWrap="wrap">
+    <VStack className="gap-2">
+      <Text className="font-bold">Repeat</Text>
+      <HStack className="gap-2 flex-wrap">
         {DAYS.map((day, i) => (
           <Button
             key={i}
-            size="sm"
-            variant={selectedDays.includes(i) ? "solid" : "outline"}
-            bg={selectedDays.includes(i) ? "$primary500" : "transparent"}
+            className={`px-3 py-1 rounded ${selectedDays.includes(i) ? "bg-primary-500" : "bg-transparent border border-primary-500"}`}
             onPress={() => toggle(i)}
           >
             <ButtonText
-              color={selectedDays.includes(i) ? "$white" : "$primary500"}
+              className={
+                selectedDays.includes(i) ? "text-white" : "text-primary-500"
+              }
             >
               {day}
             </ButtonText>

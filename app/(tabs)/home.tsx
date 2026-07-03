@@ -1,20 +1,12 @@
 // app/(tabs)/home.tsx
-import {
-  Box,
-  HStack,
-  Heading,
-  Icon,
-  SunIcon,
-  Text,
-  VStack
-} from "@gluestack-ui/themed";
 import React, { useEffect, useState } from "react";
-import { useAlarms } from "../../context/AlarmsContext";
+import { Text as RNText, View } from "react-native";
+import { Alarm, useAlarms } from "../../context/AlarmsContext";
 
 export default function HomeScreen() {
   const { getNextAlarm } = useAlarms();
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [nextAlarm, setNextAlarm] = useState(null);
+  const [nextAlarm, setNextAlarm] = useState<Alarm | null>(null);
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -38,96 +30,83 @@ export default function HomeScreen() {
   const todayIndex = currentTime.getDay();
 
   return (
-    <Box flex={1} bg="$backgroundLight" p="$5">
-      <VStack space="xl" flex={1}>
+    <View className="flex-1 bg-background p-5">
+      <View className="flex-1 justify-between">
         {/* Header */}
-        <HStack justifyContent="space-between" alignItems="center">
-          <VStack>
-            <Heading size="2xl">Good Morning, John</Heading>
-            <Text fontSize="$2xl" fontWeight="bold" color="$primary600">
+        <View className="flex-row justify-between items-center">
+          <View>
+            <RNText className="text-3xl font-bold text-foreground">
+              Good Morning, John
+            </RNText>
+            <RNText className="text-2xl font-bold text-primary">
               {formatTime(currentTime)}
-            </Text>
-            <Text fontSize="$md" color="$textLight">
+            </RNText>
+            <RNText className="text-base text-muted-foreground">
               {formatDate(currentTime)}
-            </Text>
-          </VStack>
-          <Box bg="$primary100" p="$2" borderRadius="$full">
-            <Icon as={SunIcon} color="$primary500" size="xl" />
-          </Box>
-        </HStack>
+            </RNText>
+          </View>
+          <View className="bg-primary/20 p-2 rounded-full">
+            <RNText className="text-3xl">☀️</RNText>
+          </View>
+        </View>
 
         {/* Upcoming Alarm */}
         {nextAlarm && (
-          <Box
-            bg="$primary50"
-            p="$4"
-            borderRadius="$lg"
-            borderWidth={1}
-            borderColor="$primary200"
-          >
-            <VStack space="sm">
-              <Text
-                fontSize="$xs"
-                fontWeight="bold"
-                color="$primary600"
-                letterSpacing={1}
-              >
+          <View className="bg-primary/10 p-4 rounded-lg border border-primary/30">
+            <View className="gap-2">
+              <RNText className="text-xs font-bold text-primary tracking-wider">
                 UPCOMING ALARM
-              </Text>
-              <Heading size="xl">{nextAlarm.label}</Heading>
-              <Heading size="3xl" color="$primary600">
+              </RNText>
+              <RNText className="text-xl font-bold">{nextAlarm.label}</RNText>
+              <RNText className="text-3xl font-bold text-primary">
                 {nextAlarm.time}
-              </Heading>
-              <HStack space="sm">
+              </RNText>
+              <View className="flex-row gap-2">
                 {dayNames.map((day, i) => (
-                  <Box
+                  <View
                     key={i}
-                    bg={i === todayIndex ? "$primary500" : "transparent"}
-                    px="$2"
-                    py="$1"
-                    borderRadius="$sm"
+                    className={`px-2 py-1 rounded-sm ${i === todayIndex ? "bg-primary" : "bg-transparent"}`}
                   >
-                    <Text
-                      color={i === todayIndex ? "$white" : "$textLight"}
-                      fontWeight="bold"
+                    <RNText
+                      className={`font-bold ${i === todayIndex ? "text-white" : "text-muted-foreground"}`}
                     >
                       {day}
-                    </Text>
-                  </Box>
+                    </RNText>
+                  </View>
                 ))}
-              </HStack>
-            </VStack>
-          </Box>
+              </View>
+            </View>
+          </View>
         )}
 
         {/* Feature Highlights (description) */}
-        <VStack space="md">
-          <Box bg="$warmGray100" p="$4" borderRadius="$lg">
-            <Heading size="sm" color="$primary600">
-              1. HOME
-            </Heading>
-            <Text>Shows current time, upcoming alarm and other alarms.</Text>
-          </Box>
-          <Box bg="$warmGray100" p="$4" borderRadius="$lg">
-            <Heading size="sm" color="$primary600">
+        <View className="gap-4">
+          <View className="bg-muted p-4 rounded-lg">
+            <RNText className="text-sm font-bold text-primary">1. HOME</RNText>
+            <RNText>
+              Shows current time, upcoming alarm and other alarms.
+            </RNText>
+          </View>
+          <View className="bg-muted p-4 rounded-lg">
+            <RNText className="text-sm font-bold text-primary">
               2. ALARMS LIST
-            </Heading>
-            <Text>
+            </RNText>
+            <RNText>
               View all your alarms with details and enable / disable them.
-            </Text>
-          </Box>
-          <Box bg="$warmGray100" p="$4" borderRadius="$lg">
-            <Heading size="sm" color="$primary600">
+            </RNText>
+          </View>
+          <View className="bg-muted p-4 rounded-lg">
+            <RNText className="text-sm font-bold text-primary">
               3. ADD / EDIT ALARM
-            </Heading>
-            <Text>
+            </RNText>
+            <RNText>
               Set the time, repeat days, sound, vibration, label and more.
-            </Text>
-          </Box>
-        </VStack>
+            </RNText>
+          </View>
+        </View>
 
-        <Spacer />
-      </VStack>
-    </Box>
+        <View className="flex-1" />
+      </View>
+    </View>
   );
 }

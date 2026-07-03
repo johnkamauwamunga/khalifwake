@@ -1,12 +1,11 @@
 // app/(tabs)/sounds.tsx
 import {
-  Box,
   Button,
   ButtonText,
   Heading,
   HStack,
   Text,
-  VStack
+  VStack,
 } from "@gluestack-ui/themed";
 import { Audio } from "expo-av";
 import React, { useState } from "react";
@@ -48,47 +47,36 @@ export default function SoundsScreen() {
   };
 
   return (
-    <Box flex={1} bg="$backgroundLight" p="$4">
-      <VStack space="md">
-        <Heading size="xl">Sound Selection</Heading>
-        <Text>Choose beautiful natural sounds. Preview before selecting.</Text>
-        {SOUNDS.map((sound) => (
-          <HStack
-            key={sound.id}
-            justifyContent="space-between"
-            alignItems="center"
-            p="$3"
-            bg={selectedSound === sound.id ? "$primary100" : "$warmGray100"}
-            borderRadius="$md"
-          >
-            <HStack space="md" alignItems="center">
-              <Text fontSize="$xl">{sound.emoji}</Text>
-              <VStack>
-                <Text
-                  fontWeight={selectedSound === sound.id ? "bold" : "normal"}
-                >
-                  {sound.name}
-                </Text>
-                {selectedSound === sound.id && (
-                  <Text fontSize="$xs" color="$primary600">
-                    ✓ Selected
-                  </Text>
-                )}
-              </VStack>
-            </HStack>
-            <Button
-              size="sm"
-              variant={selectedSound === sound.id ? "solid" : "outline"}
-              onPress={() => {
-                setSelectedSound(sound.id);
-                playPreview(sound.id);
-              }}
-            >
-              <ButtonText>Preview</ButtonText>
-            </Button>
+    <VStack className="flex-1 bg-background p-4 gap-4">
+      <Heading className="text-xl">Sound Selection</Heading>
+      <Text>Choose beautiful natural sounds. Preview before selecting.</Text>
+      {SOUNDS.map((sound) => (
+        <HStack
+          key={sound.id}
+          className={`justify-between items-center p-3 rounded-md ${selectedSound === sound.id ? "bg-primary-100" : "bg-warm-gray-100"}`}
+        >
+          <HStack className="gap-2 items-center">
+            <Text className="text-2xl">{sound.emoji}</Text>
+            <VStack>
+              <Text className={selectedSound === sound.id ? "font-bold" : ""}>
+                {sound.name}
+              </Text>
+              {selectedSound === sound.id && (
+                <Text className="text-xs text-primary-600">✓ Selected</Text>
+              )}
+            </VStack>
           </HStack>
-        ))}
-      </VStack>
-    </Box>
+          <Button
+            className="w-20 h-10"
+            onPress={() => {
+              setSelectedSound(sound.id);
+              playPreview(sound.id);
+            }}
+          >
+            <ButtonText>Preview</ButtonText>
+          </Button>
+        </HStack>
+      ))}
+    </VStack>
   );
 }
